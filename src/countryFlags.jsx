@@ -5,17 +5,29 @@ const CountryFlags = () => {
 
   useEffect(() => {
     fetch("https://xcountries-backend.labs.crio.do/all")
-      .then((res) => res.json())
-      .then((data) => setCountries(data))
-      .catch((err) => console.error(err));
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return res.json();
+      })
+      .then((data) => {
+        setCountries(data);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
   }, []);
 
   return (
-    <div style={{ display: "flex", flexWrap: "wrap", gap: "20px" }}>
+    <div>
       {countries.map((country) => (
-        <div key={country.abbr} style={{ textAlign: "center" }}>
-          <img src={country.flag} alt={`Flag of ${country.name}`} width="100" />
+        <div key={country.abbr}>
+          {/* Country name */}
           <h4>{country.name}</h4>
+
+          {/* Flag image */}
+          <img src={country.flag} alt={`Flag of ${country.name}`} />
         </div>
       ))}
     </div>
